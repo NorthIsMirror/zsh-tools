@@ -80,17 +80,13 @@ tests=( string_test array_test )
 string_test() {
     local a=""
     integer i=50000
-    while (( i -- )); do a+="$i"; done
-
-    _finished_signal_wait
+    repeat $i; do a+="$i"; done
 }
 
 array_test() {
     typeset -a a
     integer i=10000
-    while (( i -- )); do a+=( $i ); done
-
-    _finished_signal_wait
+    repeat $i; do a+=( $i ); done
 }
 
 #
@@ -131,5 +127,6 @@ else
     [ ! -t 1 ] && echo >&2 "Running [$zsh_binary]: $@"
 
     # Run the test
-    "$@"
+    eval "run_test() { $@; _finished_signal_wait; }"
+    run_test
 fi
