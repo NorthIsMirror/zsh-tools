@@ -59,24 +59,40 @@ get_mem() {
 # Waits for signal from child process
 wait_get_mem() {
     local number
+    float average=0.0
+    integer count=0
 
     echo -n "# $TEST "
 
+    sleep 1
     while [ "$FINISHED" -eq 0 ]; do
-        sleep 3
         get_mem
         number=`LANG=C printf "%.1f" "$REPLY"`
         echo -n "${number%.0}, "
+
+        average+=number
+        count+=1
+        sleep 3
     done
 
-    get_mem
+    # Remove last result - to be certain that the average
+    # is only above data from actively working test function
+    if [ "$count" -gt 1 ]; then
+        average=average-number
+        count=count-1
+    fi
+    average=average/count
 
+    # Take the explicit last result, it's telling
+    # how zsh behaves when computation is stopped
+    sleep 1
+    get_mem
+    number=`LANG=C printf "%.1f" "$REPLY"`
+    echo "last: ${number%.0}"
     kill -15 "$SUB_PID"
 
     # Suitable for gnuplot - X Y
-    number=`LANG=C printf "%.1f" "$REPLY"`
-    echo
-    echo "$TEST" "${number%.0}"
+    LANG=C printf "$TEST %.1f\n" $average
 }
 
 _finished_signal_wait() {
@@ -92,7 +108,7 @@ tests=( string_test array_test )
 
 string_test() {
     local a=""
-    integer i=50000
+    integer i=150000
     repeat $i; do a+="$i"; done
 
     _finished_signal_wait
@@ -100,7 +116,7 @@ string_test() {
 
 array_test() {
     typeset -a a
-    integer i=10000
+    integer i=25000
     repeat $i; do a+=( $i ); done
 
     _finished_signal_wait
