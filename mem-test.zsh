@@ -40,13 +40,8 @@ finished() {
     FINISHED=1
 }
 
-# Waits for signal from child process
-# Gets its memory size
-wait_get_mem() {
-    while [ "$FINISHED" -eq 0 ]; do
-        LANG=C sleep 0.5
-    done
-
+# Gets memory size of the zsh that runs the test
+get_mem() {
     case $( uname ) in
         *Darwin*)
             output=( "${(@f)"$( top -pid "$SUB_PID" -stats mem -l 1 )"}" )
@@ -59,11 +54,29 @@ wait_get_mem() {
             to_mbytes "$output[6]"
             ;;
     esac
+}
+
+# Waits for signal from child process
+wait_get_mem() {
+    local number
+
+    echo -n "# $TEST "
+
+    while [ "$FINISHED" -eq 0 ]; do
+        sleep 3
+        get_mem
+        number=`LANG=C printf "%.1f" "$REPLY"`
+        echo -n "${number%.0}, "
+    done
+
+    get_mem
 
     kill -15 "$SUB_PID"
 
     # Suitable for gnuplot - X Y
-    echo "$TEST $REPLY"
+    number=`LANG=C printf "%.1f" "$REPLY"`
+    echo
+    echo "$TEST" "${number%.0}"
 }
 
 _finished_signal_wait() {
