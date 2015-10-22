@@ -104,7 +104,7 @@ _finished_signal_wait() {
 # Tests
 #
 
-tests=( string_test array_test )
+tests=( string_test array_test function_test search_test )
 
 string_test() {
     local a=""
@@ -118,6 +118,32 @@ array_test() {
     typeset -a a
     integer i=25000
     repeat $i; do a+=( $i ); done
+
+    _finished_signal_wait
+}
+
+function_test() {
+    local count
+
+    if [ -z "$1" ]; then
+        repeat 10000; do function_test 100; done
+        _finished_signal_wait
+    else
+        count="$1"
+    fi
+
+    if (( count -- > 0 )); then
+        function_test "$count"
+    fi
+}
+
+search_test() {
+    integer elements=600000
+    a="${(r:elements:: _:)b}"
+    a=( $=a )
+    a=( "${(@M)a:#(#i)*_*}" )
+    a=( "${(@)a//(#mi)(_|a)/-${MATCH}-}" )
+    a=( "${(@)a//(#bi)(_|-)/|${match[1]}|}" )
 
     _finished_signal_wait
 }

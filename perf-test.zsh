@@ -34,7 +34,7 @@ _finished_signal_wait() {
 # Tests
 #
 
-tests=( array_test string_test function_test )
+tests=( string_test array_test function_test search_test )
 
 float multiplier=0.5
 
@@ -63,6 +63,15 @@ function_test() {
     if (( count -- > 0 )); then
         function_test "$count"
     fi
+}
+
+search_test() {
+    integer elements=$(( 800000 * multiplier ))
+    a="${(r:elements:: _:)b}"
+    a=( $=a )
+    a=( "${(@M)a:#(#i)*_*}" )
+    a=( "${(@)a//(#mi)(_|a)/-${MATCH}-}" )
+    a=( "${(@)a//(#bi)(_|-)/|${match[1]}|}" )
 }
 
 #
