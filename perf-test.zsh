@@ -80,12 +80,12 @@ search_test() {
 
 # Detect main vs. for-test invocation
 if [ -z "$1" ]; then
-    for current_zsh in "$zshs[@]"; do
-        type "$current_zsh" 2>/dev/null 1>&2 || { echo >&2 "Skipping non-accessible $current_zsh"; continue }
-        zsh_binary="${current_zsh##*/}"
 
-        echo "# Tests for $zsh_binary"
-        for test in "$tests[@]"; do
+    for test in "$tests[@]"; do
+        for current_zsh in "$zshs[@]"; do
+
+            type "$current_zsh" 2>/dev/null 1>&2 || { echo >&2 "Skipping non-accessible $current_zsh"; continue }
+            zsh_binary="${current_zsh##*/}"
             FINISHED=0
             TEST="$test"
 
@@ -94,16 +94,18 @@ if [ -z "$1" ]; then
             SUB_PID=$!
             wait_for_end_of_test
         done
-        echo
+
         echo
 
     done
+
 else
     MAIN_PID="$1"
     zsh_binary="${2##*/}"
     shift
     shift
-    echo -n "Running [$zsh_binary]: $@ "
+    txt="Running [$zsh_binary]: "
+    echo -n "${(r:40:: :)txt}" "${(r:15:: :)*}"
 
     # Run the test
     zprof -c
@@ -111,7 +113,7 @@ else
     zprof_out=( "${(@f)"$( zprof )"}" )
     zprof_out="$zprof_out[3]"
     zprof_out=( $=zprof_out )
-    echo "$zprof_out[3]"
+    echo "${(l:10:: :)zprof_out[3]}"
 
     _finished_signal_wait
 fi
