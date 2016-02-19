@@ -184,13 +184,10 @@ alias want_to_call_something=":"
       # indistinguishable from 'echo foo echo bar' (one command with three
       # words for arguments).
       local needle=$'[;\n]'
-      #integer offset=${${buf[start_pos+1,-1]}[(i)$needle]}
-      #integer offset=${${buf[start_pos+1,len]}[(i)$needle]}
       integer offset=${${buf: start_pos: len}[(i)$needle]}
       (( start_pos += offset - 1 ))
       (( end_pos = start_pos + $#arg ))
     else
-      #((start_pos+=${#buf[$start_pos+1,-1]}-${#${buf[$start_pos+1,-1]##([[:space:]]|\\[[:space:]])#}}))
       ((start_pos+=(len-start_pos)-${#${${buf: start_pos: len}##([[:space:]]|\\[[:space:]])#}}))
       ((end_pos=$start_pos+${#arg}))
     fi
