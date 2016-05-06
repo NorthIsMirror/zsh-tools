@@ -72,7 +72,7 @@ alias want_to_call_something=":"
   # Having start<0 is normal with e.g. multiline strings
   (( start < 0 )) && start=0
 
-  region_highlight+=("$start $end $sort | ${buf[start+1,end]}")
+  region_highlight+=("$start $end $sort")
 }
 
 # Wrapper around 'type -w'.
