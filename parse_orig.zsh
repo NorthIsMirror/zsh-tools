@@ -1,5 +1,9 @@
 #!/usr/bin/env zsh
 
+#
+# ORIGINAL (BEFORE OPTIMIZATIONS) VERSION
+#
+
 # -------------------------------------------------------------------------------------------------
 # Copyright (c) 2010-2015 zsh-syntax-highlighting contributors
 # All rights reserved.

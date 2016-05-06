@@ -1,5 +1,9 @@
 #!/usr/bin/env zsh
 
+#
+# OPTIMIZED VERSION WITH BASH SYNTAX THAT USES : len INSTEAD OF : len-start_pos
+#
+
 # -------------------------------------------------------------------------------------------------
 # Copyright (c) 2010-2015 zsh-syntax-highlighting contributors
 # All rights reserved.
