@@ -237,8 +237,8 @@ alias want_to_call_something=":"
      else
       -zplg-statica-expand-path $arg
       local expanded_arg="$REPLY"
-      local res="$(-zplg-statica-type ${expanded_arg})"
-      #res="alias"
+      #local res="$(-zplg-statica-type ${expanded_arg})"
+      res="alias"
       () {
         # Special-case: command word is '$foo', like that, without braces or anything.
         #
@@ -250,8 +250,8 @@ alias want_to_call_something=":"
         local MATCH; integer MBEGIN MEND
         if [[ $res == *': none' ]] && (( ${+parameters} )) &&
            [[ ${arg[1]} == \$ ]] && [[ ${arg:1} =~ ^([A-Za-z_][A-Za-z0-9_]*|[0-9]+)$ ]]; then
-          res="$(-zplg-statica-type ${(P)MATCH})"
-          #res="alias"
+          #res="$(-zplg-statica-type ${(P)MATCH})"
+          res="alias"
         fi
       }
       case $res in
