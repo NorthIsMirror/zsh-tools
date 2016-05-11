@@ -199,8 +199,7 @@ alias want_to_call_something=":"
       (( start_pos += offset -1 ))
       (( end_pos = start_pos + $#arg ))
     else
-      ((offset=(len-start_pos)-${#${proc_buf##([[:space:]]|\\[[:space:]])#}}))
-      ((start_pos+=offset))
+      ((start_pos+=(len-start_pos)-${#${proc_buf##([[:space:]]|\\[[:space:]])#}}))
       ((end_pos=$start_pos+${#arg}))
     fi
 
