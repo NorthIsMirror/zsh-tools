@@ -200,7 +200,13 @@ alias want_to_call_something=":"
       ((end_pos=$start_pos+${#arg}))
     fi
 
-    # Advance of how much end_pos did advance + 1
+    # Above `if` computes new start_pos and end_pos
+    # Here we compute new proc_buf. We advance it
+    # (chop off `x` characters from the beginning)
+    # beyond what end_pos points to - by skipping
+    # as many characters, as end_pos was advanced
+    # end_pos was advanced by offset (via start_pos)
+    # and by $#arg
     proc_buf="${proc_buf[offset + $#arg + 1,-1]}"
 
     if [[ -n ${interactive_comments+'set'} && $arg[1] == $histchars[3] ]]; then
