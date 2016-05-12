@@ -207,7 +207,7 @@ alias want_to_call_something=":"
     # as many characters, as end_pos was advanced
     # end_pos was advanced by offset (via start_pos)
     # and by $#arg
-    proc_buf="${proc_buf[offset + $#arg + 1,-1]}"
+    proc_buf="${proc_buf[offset + $#arg + 1,len]}"
 
     if [[ -n ${interactive_comments+'set'} && $arg[1] == $histchars[3] ]]; then
       if [[ $this_word == *(':regular:'|':start:')* ]]; then
