@@ -155,8 +155,6 @@ alias want_to_call_something=":"
   integer in_redirection
   # Processing buffer
   local proc_buf="$buf"
-  # Starting position in previous loop run
-  integer prev_start_pos=0
   for arg in ${(zZ+c+)buf}; do
     if (( in_redirection )); then
       (( --in_redirection ))
@@ -181,8 +179,6 @@ alias want_to_call_something=":"
       fi
     fi
 
-    proc_buf="${proc_buf[start_pos-prev_start_pos+1,-1]}"
-    prev_start_pos=start_pos
 
     # advance $start_pos, skipping over whitespace in $buf.
     if [[ $arg == ';' ]] ; then
@@ -195,13 +191,17 @@ alias want_to_call_something=":"
       # indistinguishable from 'echo foo echo bar' (one command with three
       # words for arguments).
       local needle=$'[;\n]'
-      integer offset=${proc_buf[(i)$needle]}
-      (( start_pos += offset -1 ))
+      integer offset=$(( ${proc_buf[(i)$needle]} - 1 ))
+      (( start_pos += offset ))
       (( end_pos = start_pos + $#arg ))
     else
-      ((start_pos+=(len-start_pos)-${#${proc_buf##([[:space:]]|\\[[:space:]])#}}))
+      integer offset=$(((len-start_pos)-${#${proc_buf##([[:space:]]|\\[[:space:]])#}}))
+      ((start_pos+=offset))
       ((end_pos=$start_pos+${#arg}))
     fi
+
+    # Advance of how much end_pos did advance + 1
+    proc_buf="${proc_buf[offset + $#arg + 1,-1]}"
 
     if [[ -n ${interactive_comments+'set'} && $arg[1] == $histchars[3] ]]; then
       if [[ $this_word == *(':regular:'|':start:')* ]]; then
