@@ -1,6 +1,9 @@
 #!/usr/bin/env zsh
 
 #
+# Optimizes out $(type ...) with single assingment just to check possible gain
+#
+# bases on:
 # OPTIMIZED VERSION WITH BASH SYNTAX THAT USES : len INSTEAD OF : len-start_pos
 #
 
